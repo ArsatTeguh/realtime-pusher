@@ -4,7 +4,10 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' ? 'https://learn-management-system-one.vercel.app': 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(bodyParser.json());
 app.use(express.json());
 
