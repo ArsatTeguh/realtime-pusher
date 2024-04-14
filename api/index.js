@@ -42,7 +42,7 @@ app.post('/action', (req, res) => {
     const isLike = data.actionSocket.like.includes(data.user);
     const isDislike = data.actionSocket.dislike.includes(data.user);
     const { like, dislike, id } = data.actionSocket;
-    res.sendStatus(200);
+    res.json({ message: "OK" });
     if (isLike && data.like) {
       const newdata = data.actionSocket.like.filter(likeValue => likeValue !== data.user);
       return pusher.trigger(data.currentVideo, 'behavior', { id, like: newdata, dislike });
@@ -55,10 +55,6 @@ app.post('/action', (req, res) => {
     } else if (!isDislike && data.dislike) {
       const newdata = [...data.actionSocket.dislike, data.user];
       return pusher.trigger(data.currentVideo, 'behavior', { id, like, dislike: newdata });
-    } else {
-      // Jika tidak ada aksi yang cocok, langsung kirim respons OK
-      res.json({ message: "OK" });
-      return; // Menghentikan eksekusi lebih lanjut
     }
   } catch (error) {
     console.log(error);
@@ -72,7 +68,7 @@ app.post('/action', (req, res) => {
 
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
