@@ -16,7 +16,7 @@ const pusher = new Pusher({
   key: "3006004164fdcfb53231",
   secret: "259e10da4ea805ebe835",
   cluster: "ap1",
-  useTLS: true
+  // useTLS: true
 });
 
 app.post('/message', async (req, res) => {
