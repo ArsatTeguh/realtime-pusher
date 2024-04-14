@@ -22,7 +22,7 @@ const pusher = new Pusher({
 app.post('/message', async (req, res) => {
   const data = req.body
   try {
-    pusher.trigger(data.currentVideo, 'chat', data)
+    await pusher.trigger(data.currentVideo, 'chat', data)
     res.json({ message: "OK" });
     res.sendStatus(200);
   } catch (error) {
@@ -39,16 +39,16 @@ app.post('/action', async (req, res) => {
     res.json({ message: "OK" });
     if (isLike && data.like) {
       const newdata = data.actionSocket.like.filter(likeValue => likeValue !== data.user);
-      return pusher.trigger(data.currentVideo, 'behavior', { id, like: newdata, dislike });
+      return await pusher.trigger(data.currentVideo, 'behavior', { id, like: newdata, dislike });
     } else if (isDislike && data.dislike) {
       const newdata = data.actionSocket.dislike.filter(dislikeValue => dislikeValue !== data.user);
-      return pusher.trigger(data.currentVideo, 'behavior', { id, like, dislike: newdata });
+      return await pusher.trigger(data.currentVideo, 'behavior', { id, like, dislike: newdata });
     } else if (!isLike && data.like) {
       const newdata = [...data.actionSocket.like, data.user];
-      return pusher.trigger(data.currentVideo, 'behavior', { id, like: newdata, dislike });
+      return await pusher.trigger(data.currentVideo, 'behavior', { id, like: newdata, dislike });
     } else if (!isDislike && data.dislike) {
       const newdata = [...data.actionSocket.dislike, data.user];
-      return pusher.trigger(data.currentVideo, 'behavior', { id, like, dislike: newdata });
+      return await pusher.trigger(data.currentVideo, 'behavior', { id, like, dislike: newdata });
     }
   } catch (error) {
     console.log(error);
