@@ -22,44 +22,53 @@ const pusher = new Pusher({
 app.post('/message', async (req, res) => {
   const data = req.body
   try {
-    await pusher.trigger(data.currentVideo, 'chat', data)
-    res.json({ message: "OK" });
-    res.sendStatus(200);
+    pusher.trigger(data.currentVideo, 'chat', data)
+    res.status(200).json({ message: "OK" });
   } catch (error) {
     console.log(error);
   }
 });
 
-app.post('/action', async (req, res) => {
-  const data = req.body;
-  try {
-    const isLike = data.actionSocket.like.includes(data.user);
-    const isDislike = data.actionSocket.dislike.includes(data.user);
-    const { like, dislike, id } = data.actionSocket;
-    res.json({ message: "OK" });
-    if (isLike && data.like) {
-      const newdata = data.actionSocket.like.filter(likeValue => likeValue !== data.user);
-      return await pusher.trigger(data.currentVideo, 'behavior', { id, like: newdata, dislike });
-    } else if (isDislike && data.dislike) {
-      const newdata = data.actionSocket.dislike.filter(dislikeValue => dislikeValue !== data.user);
-      return await pusher.trigger(data.currentVideo, 'behavior', { id, like, dislike: newdata });
-    } else if (!isLike && data.like) {
-      const newdata = [...data.actionSocket.like, data.user];
-      return await pusher.trigger(data.currentVideo, 'behavior', { id, like: newdata, dislike });
-    } else if (!isDislike && data.dislike) {
-      const newdata = [...data.actionSocket.dislike, data.user];
-      return await pusher.trigger(data.currentVideo, 'behavior', { id, like, dislike: newdata });
-    }
-  } catch (error) {
-    console.log(error);
-    // Kirim status error jika terjadi kesalahan
-    if (!res.headersSent) {
-      res.status(500).json({ message: "Internal Server Error" });
-    }
-  }
-});
+// app.post('/action', async (req, res) => {
+//   const data = req.body;
 
-const port = process.env.PORT || 3000;
+//   const isLike = data.actionSocket.like.includes(data.user);
+//   const isDislike = data.actionSocket.dislike.includes(data.user);
+//   const { like, dislike, id } = data.actionSocket;
+//   const roomId = data.currentVideo
+//   try {
+//     if (isLike && data.like) {
+//       const newdata = data.actionSocket.like.filter(likeValue => likeValue !== data.user);
+//       console.log('1');
+//       pusher.trigger(roomId, 'behavior', { id, like: newdata, dislike })
+//       res.status(200).json({ message: "OK" });
+//       return
+//     } else if (isDislike && data.dislike) {
+//       const newdata = data.actionSocket.dislike.filter(dislikeValue => dislikeValue !== data.user);
+//       console.log('2');
+//       pusher.trigger(roomId, 'behavior', { id, like, dislike: newdata })
+//       res.status(200).json({ message: "OK" });
+//       return
+//     } else if (!isLike && data.like) {
+//       const newdata = [...data.actionSocket.like, data.user];
+//       console.log('3');
+//       pusher.trigger(roomId, 'behavior', { id, like: newdata, dislike })
+//       res.status(200).json({ message: "OK" });
+//       return
+//     } else if (!isDislike && data.dislike) {
+//       const newdata = [...data.actionSocket.dislike, data.user];
+//       console.log('4');
+//       pusher.trigger(roomId, 'behavior', { id, like, dislike: newdata })
+//       res.status(200).json({ message: "OK" });
+//       return
+//     }
+//     console.log('5');
+//   } catch (error) {
+//     res.status(500).json({ message: "Internal Server Error" });
+//     }
+// });
+
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
